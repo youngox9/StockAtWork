@@ -48,7 +48,7 @@
     "tls": "^0.0.1",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^4.44.0",
-    "webpack-bundle-analyzer": "^2.13.1",
+    "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.0.6",
     "webpack-dev-server": "^3.1.4",
     "webpack-merge": "^4.1.4",
