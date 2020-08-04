@@ -3,9 +3,9 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
-  // mode: 'production',
+  mode: 'production',
+  // mode: 'development',
   devtool: 'cheap-module-source-map',
-  mode: 'development',
   context: path.resolve(__dirname, './'),
   performance: { hints: false },
   entry: {
@@ -37,11 +37,11 @@ module.exports = {
   },
   plugins:
     [
-      // new CompressionPlugin(),
-      // new UglifyJsPlugin({
-      //   parallel: true,
-      //   sourceMap: true,
-      // })
+      new UglifyJsPlugin({
+        parallel: true,
+        sourceMap: true,
+      }),
+      new CompressionPlugin(),
     ],
   module: {
     rules: [
