@@ -1,0 +1,37 @@
+{
+  "name": "Stock at Work",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "permissions": [
+    "tabs",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "dist/contentScript.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "background": {
+    "scripts": [
+      "dist/background.js"
+    ],
+    "persistent": false
+  },
+  "icons": {
+    "16": "icon14.png",
+    "48": "icon14.png",
+    "128": "icon14.png"
+  }
+}
