@@ -77,16 +77,16 @@ const TABS_SETTING = [
     key: '0',
     render: <Favorite />
   },
-  {
-    name: (
-      <span>
-        <SearchOutlined />
-        搜尋個股
-      </span>
-    ),
-    key: '1',
-    render: <Search />
-  },
+  // {
+  //   name: (
+  //     <span>
+  //       <SearchOutlined />
+  //       搜尋個股
+  //     </span>
+  //   ),
+  //   key: '1',
+  //   render: <Search />
+  // },
   // { name: <span>損益試算</span>, key: '2', render: '施工中' },
   // { name: <span>設定</span>, key: '3', render: '施工中' },
 ];

@@ -34,8 +34,7 @@ export async function getStockInfo(id, data) {
   return result;
 }
 
-export async function getStock(item) {
-  const { id, detail = [] } = item;
+export async function getStock(id) {
   try {
     const { data } = await axios({
       method: 'get',
@@ -47,12 +46,30 @@ export async function getStock(item) {
     if (sotckInfo) {
       return {
         id,
-        info: {
-          ...sotckInfo,
-        },
-        detail,
+        ...sotckInfo
       };
     }
+  } catch (e) {
+    console.log(e);
+  }
+  return null;
+}
+
+export async function getStockAutoComplete(text) {
+  try {
+    const res = await axios({
+      method: 'get',
+      url: `https://tw.stock.yahoo.com/_td/api/resource/AutocompleteService;query=${text}`,
+    });
+    const result = res?.data?.ResultSet?.Result || [];
+    // const list = result.reduce(obj => obj.exchDisp === '台灣').map(obj=>);
+    const list = result.reduce((prev, curr) => {
+      if (curr.exchDisp === '台灣') {
+        return [...prev, { ...curr, id: curr.symbol.split('.')[0] }];
+      }
+      return prev;
+    }, []);
+    return list;
   } catch (e) {
     console.log(e);
   }
