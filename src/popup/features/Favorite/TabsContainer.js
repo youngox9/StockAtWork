@@ -11,6 +11,7 @@ import {
 import { getStockList, APIURL } from '~~utils';
 import { useContextValue } from '~~hooks/useContextProvider';
 import StockDetail from '~~components/StockDetail';
+import Search from '~~features/Search';
 
 const getColumns = (props) => [
   {
@@ -118,12 +119,14 @@ const getColumns = (props) => [
   },
 ];
 
-export default function Container() {
+export default function Container(props) {
+  const { list = [], onChange } = props;
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [contextValue, dispatch] = useContextValue();
   const [loading, setLoading] = useState(true);
 
-  const { stockList = [] } = contextValue;
+  const [stockList, setStockList] = useState([]);
+  // const { stockList = [] } = contextValue;
 
   useEffect(() => {
     getList();
@@ -131,8 +134,8 @@ export default function Container() {
 
   async function getList() {
     setLoading(true);
-    const newStockList = await getStockList(stockList);
-    dispatch({ type: 'UPDATE_STOCKLIST', stockList: newStockList });
+    const newStockList = await getStockList(list);
+    setStockList(newStockList);
     setLoading(false);
   }
 
@@ -143,22 +146,7 @@ export default function Container() {
       }
       return prev;
     }, []);
-    dispatch({ type: 'UPDATE_STOCKLIST', stockList: newStockList });
-  }
-
-  function onDetailChange(detailId, newDetailRecord) {
-    const newStockList = stockList.reduce((prev, curr) => {
-      const { detail = [] } = curr;
-      const newDetail = detail.reduce((p, c) => {
-        if (c.id === detailId) {
-          return [...prev, newDetailRecord];
-        }
-        return [...p, c];
-      }, []);
-      return [...prev, { ...curr, detail: newDetail }];
-    }, []);
-
-    dispatch({ type: 'UPDATE_STOCKLIST', stockList: newStockList });
+    onChange(newStockList);
   }
 
   function onExpand(expanded, record) {
@@ -169,32 +157,35 @@ export default function Container() {
     }
   }
 
-  const extendsProps = { removeStock, onDetailChange };
+  const extendsProps = { removeStock };
   const columns = getColumns(extendsProps);
 
   return (
-    <Table
-      rowKey="id"
-      loading={loading}
-      dataSource={stockList}
-      columns={columns}
-      pagination={false}
-      showSorterTooltip={false}
-      size="small"
-      indentSize={0}
-      expandIconColumnIndex={-1}
-      onExpand={onExpand}
-      expandRowByClick
-      expandedRowKeys={expandedKeys}
-      expandable={{
-        expandedRowRender: (record, index, indent, expanded) => {
-          if (!expanded) { return null; }
-          const { id = '' } = record;
-          return (
-            <StockDetail stockId={id} />
-          );
-        },
-      }}
-    />
+    <>
+      <Search />
+      <Table
+        rowKey="id"
+        loading={loading}
+        dataSource={list}
+        columns={columns}
+        pagination={false}
+        showSorterTooltip={false}
+        size="small"
+        indentSize={0}
+        expandIconColumnIndex={-1}
+        onExpand={onExpand}
+        expandRowByClick
+        expandedRowKeys={expandedKeys}
+        expandable={{
+          expandedRowRender: (record, index, indent, expanded) => {
+            if (!expanded) { return null; }
+            const { id = '' } = record;
+            return (
+              <StockDetail stockId={id} />
+            );
+          },
+        }}
+      />
+    </>
   );
 }

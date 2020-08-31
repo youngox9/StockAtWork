@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import _get from 'lodash/get';
-import { Tooltip, Row, Col, Empty, Card, Tag, Input, Button } from 'antd';
+import { Tooltip, Row, Col, Empty, Card, Tag, Input, Button, Popover, AutoComplete } from 'antd';
 import { HeartOutlined, LinkOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { ContextProvider, useContextValue } from '~~hooks/useContextProvider';
@@ -54,30 +54,30 @@ const InfoContainer = styled.div`
 export default function Container() {
   const [contextValue, dispatch] = useContextValue();
   const [isLoading, setIsLoading] = useState(false);
-  const [stockInfo, setStockInfo] = useState({});
+  const [stockOptions, setStockOptions] = useState({});
   const { stockList = [] } = contextValue;
 
-  const info = _get(stockInfo, ['info'], {});
+  const info = _get(stockOptions, ['info'], {});
   const { name = '-', price = '-', diff = '', max = 0, min = 0, id: infoId = '' } = info;
 
   const isExist = stockList.find(o => o.id === infoId);
   const isGreen = diff && diff.indexOf('▽') >= 0;
 
-  async function searchStockInfo(id) {
+  async function searchstockOptions(id) {
     setIsLoading(true);
-    const newStockInfo = await getStock({ id });
-    if (newStockInfo) {
-      setStockInfo(newStockInfo);
+    const newstockOptions = await getStock({ id });
+    if (newstockOptions) {
+      setStockOptions([newstockOptions]);
     } else {
-      setStockInfo({});
+      setStockOptions([]);
     }
     setIsLoading(false);
   }
 
   function handleAddStock() {
     if (!isExist) {
-      const newStockList = [...stockList, stockInfo];
-      dispatch({ type: 'UPDATE_STOCKLIST', stockList: newStockList });
+      // const newStockList = [...stockList, stockOptions];
+      // dispatch({ type: 'UPDATE_STOCKLIST', stockList: newStockList });
     }
   }
 
@@ -85,13 +85,21 @@ export default function Container() {
     window.open(`${APIURL}?s=${infoId}`, '_blank');
   }
 
-  const stockInfoExist = Object.keys(stockInfo).length > 0;
+  const stockOptionsExist = Object.keys(stockOptions).length > 0;
 
   return (
     <>
-      <Search
+      <AutoComplete
+        dropdownClassName="certain-category-search-dropdown"
+        dropdownMatchSelectWidth={500}
+        style={{ width: 250 }}
+        options={stockOptions}
+      >
+        <Input.Search size="large" placeholder="input here" />
+      </AutoComplete>
+      {/* <Search
         placeholder="搜尋股票"
-        onSearch={value => searchStockInfo(value)}
+        onSearch={value => searchstockOptions(value)}
         enterButton
         allowClear
         loading={isLoading}
@@ -101,7 +109,7 @@ export default function Container() {
         loading={isLoading}
       >
         {
-          stockInfoExist
+          stockOptionsExist
             ? (
               <InfoContainer>
                 <Row>
@@ -158,7 +166,7 @@ export default function Container() {
             )
             : <Empty />
         }
-      </Card>
+      </Card> */}
     </>
   );
 }
