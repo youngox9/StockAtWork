@@ -47,7 +47,7 @@ export default function Container() {
     const newOptions = list.map(obj => {
       return {
         value: obj.id,
-        label: `${obj.name} (${obj.id})}`
+        label: `${obj.name} (${obj.id})`
       };
     });
     setStockOptions(newOptions);
@@ -77,7 +77,6 @@ export default function Container() {
           {stockInfo.name
             && (
               <>
-                <span>Result:</span>
                 <Popover
                   content={() => {
                     return (
