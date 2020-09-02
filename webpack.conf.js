@@ -2,6 +2,9 @@ const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 
+// const darkTheme = require('@ant-design/dark-theme');
+const darkTheme = require('./index');
+
 module.exports = {
   // mode: 'production',
   mode: 'development',
@@ -141,8 +144,9 @@ module.exports = {
         {
           loader: 'less-loader',
           options: {
-            lessOptions: { // If you are using less-loader@5 please spread the lessOptions to options directly
+            lessOptions: {
               modifyVars: {
+                ...darkTheme,
                 'font-size-base': '10px',
               },
               javascriptEnabled: true,

@@ -11,14 +11,14 @@ const IframeContainerStyles = styled.div`
   display: block;
   width: 100%;
   padding-bottom: 80%;
-  margin-bottom: -20%;
+  margin-bottom: -10%;
   iframe {
     position: absolute;
     top:0;
     left: 0;
     height: auto;
     width: ${`${iframeWidth}px`};
-    height: 100%;
+    height: 120%;
     border: none;
     outline: 0;
     display:block;

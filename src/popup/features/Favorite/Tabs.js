@@ -29,7 +29,12 @@ const TabTitleEdit = styled.div`
     /* padding-right: 10px; */
     >.ant-btn{
       opacity: 1;
+      visibility: visible;
     }
+  }
+  span {
+    /* margin-right: 0.2rem; */
+    font-weight: bolder;
   }
   >.ant-btn {
     opacity: 0;
@@ -37,12 +42,14 @@ const TabTitleEdit = styled.div`
     top: 50%;
     transform: translate(0%, -50%);
     right: 6px;
-    transition: 0.18s ease all;
+    transition: 0.18s 0.6s ease all;
+    visibility: hidden;
   }
 `;
 
 function EditableTitle(props) {
   const {
+    canRemove = true,
     onChange = () => { },
     onRemove = () => { },
     title = '',
@@ -77,18 +84,24 @@ function EditableTitle(props) {
             shape="circle"
             icon={<SaveFilled size="12px" />}
           />
-          <Button
-            onClick={onRemove}
-            size="small"
-            type="link"
-            shape="circle"
-            icon={<DeleteFilled size="12px" />}
-          />
+          {
+            canRemove
+            && (
+              <Button
+                onClick={onRemove}
+                size="small"
+                type="link"
+                shape="circle"
+                icon={<DeleteFilled size="12px" />}
+              />
+            )
+          }
+
         </>
       )
         : (
           <TabTitleEdit key={key}>
-            {title}
+            <span>{title}</span>
             <Button
               onClick={() => setEditMode(true)}
               size="small"
@@ -105,19 +118,12 @@ function EditableTitle(props) {
 export default function TabsComponent() {
   const [contextValue, dispatch] = useContextValue();
   const { stockList = [] } = contextValue;
-  const [isEditMode, setIsEditMode] = useState(false);
-  // const [panes] = useState(initialPanes);
-  const [activeKey, setActiveKey] = useState('');
 
-  // useEffect(() => {
-  //   setActiveKey();
-  // }, [JSON.stringify(stockList)]);
-
-  function onTabChnage(key) {
-    if (!isEditMode) {
-      setActiveKey(key);
+  useEffect(() => {
+    if (stockList.length === 0) {
+      onAddTab();
     }
-  }
+  }, [stockList]);
 
   function onEdit(taget, action) {
     if (action === 'add') {
@@ -174,7 +180,6 @@ export default function TabsComponent() {
     <>
       <Tabs
         type="editable-card"
-        onChange={onTabChnage}
         size="small"
         // activeKey={activeKey}
         onEdit={onEdit}
@@ -188,6 +193,7 @@ export default function TabsComponent() {
                 key={key}
                 tab={(
                   <EditableTitle
+                    canRemove={stockList.length > 1}
                     title={title}
                     onChange={(val) => onChangeTab(val, key)}
                     onRemove={() => onRemoveTab(key)}

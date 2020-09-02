@@ -3,9 +3,9 @@ import $ from 'jquery';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Tabs } from 'antd';
 import reset from 'styled-reset';
-import { HeartTwoTone, SearchOutlined } from '@ant-design/icons';
+import { HeartFilled, SettingFilled } from '@ant-design/icons';
 import { useContextValue } from '~~hooks/useContextProvider';
-import Search from '~~features/Search';
+import Setting from '~~features/Setting';
 import Favorite from '~~features/Favorite';
 
 const { TabPane } = Tabs;
@@ -32,6 +32,8 @@ const ContainerWrap = styled.div`
   max-width: 100%;
   margin: 0 auto;
   padding: 6px;
+  transition: 0.3s ease all;
+  border: 1px solid #ddd;
   .ant-tabs-nav {
     margin-bottom: 6px;
   }
@@ -40,9 +42,6 @@ const ContainerWrap = styled.div`
       width: 20px;
       max-width: 20px;
     }
-    /* .ant-table-wrapper:only-child .ant-table {
-      margin-left: -4px !important; 
-    } */
     td,  
     th {
       text-align: center;
@@ -69,24 +68,24 @@ const ContainerWrap = styled.div`
 const TABS_SETTING = [
   {
     name: (
-      <span>
-        <HeartTwoTone twoToneColor="#eb2f96" />
-        我的最愛
-      </span>
+      <>
+        <HeartFilled size="small" />
+        <span>我的最愛</span>
+      </>
     ),
     key: '0',
     render: <Favorite />
   },
-  // {
-  //   name: (
-  //     <span>
-  //       <SearchOutlined />
-  //       搜尋個股
-  //     </span>
-  //   ),
-  //   key: '1',
-  //   render: <Search />
-  // },
+  {
+    name: (
+      <span>
+        <SettingFilled />
+        設置
+      </span>
+    ),
+    key: '1',
+    render: <Setting />
+  },
   // { name: <span>損益試算</span>, key: '2', render: '施工中' },
   // { name: <span>設定</span>, key: '3', render: '施工中' },
 ];
@@ -111,7 +110,12 @@ export default function Container() {
   return (
     <ContainerWrap ref={setContainerEl}>
       <GlobalStyle values={{ ...contextValue, bodyHeight }} />
-      <Tabs activeKey={activeTab} onChange={setActiveTab} size="small" type="card">
+      <Tabs
+        activeKey={activeTab}
+        onChange={setActiveTab}
+        size="small"
+        type="card"
+      >
         {
           TABS_SETTING.map(tab => {
             const { render = null, name, key } = tab;

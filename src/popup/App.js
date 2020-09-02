@@ -1,13 +1,14 @@
 import React from 'react';
+import DynamicAntdTheme from 'dynamic-antd-theme';
 import Container from '~~features/Container';
 import { ContextProvider } from '~~hooks/useContextProvider';
 
-// import 'antd/dist/antd.css';
-import 'antd/lib/style/themes/default.less';
 import 'antd/dist/antd.less';
 
+// import './less/index.less';
+
 function getStockList() {
-  const data = localStorage.getItem('item');
+  const data = localStorage.getItem('stockData');
   const stockList = data ? JSON.parse(data) : [];
   return stockList;
 }
@@ -25,7 +26,7 @@ const reducer = (state, action) => {
     case 'UPDATE_STOCKLIST':
       // eslint-disable-next-line no-case-declarations
       const { stockList = [] } = action;
-      localStorage.setItem('item', JSON.stringify(stockList));
+      localStorage.setItem('stockData', JSON.stringify(stockList));
       return {
         ...state,
         stockList: action.stockList

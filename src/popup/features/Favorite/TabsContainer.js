@@ -20,7 +20,7 @@ const getColumns = (props) => [
         <p>名稱</p>
       );
     },
-    dataIndex: ['info', 'name'],
+    dataIndex: 'name',
   },
   {
     title() {
@@ -28,9 +28,9 @@ const getColumns = (props) => [
         <p>今價</p>
       );
     },
-    dataIndex: ['info', 'price'],
+    dataIndex: 'price',
     sorter(a, b) {
-      return _get(a, ['info', 'price'], 0) - _get(b, ['info', 'price'], 0);
+      return _get(a, ['price'], 0) - _get(b, ['price'], 0);
     },
     render(val) {
       return (
@@ -46,9 +46,9 @@ const getColumns = (props) => [
         <p>最高</p>
       );
     },
-    dataIndex: ['info', 'max'],
+    dataIndex: 'max',
     sorter(a, b) {
-      return _get(a, ['info', 'max'], 0) - _get(b, ['info', 'max'], 0);
+      return _get(a, ['max'], 0) - _get(b, ['max'], 0);
     },
     render(val) {
       return (
@@ -64,7 +64,7 @@ const getColumns = (props) => [
         <p>最低</p>
       );
     },
-    dataIndex: ['info', 'min'],
+    dataIndex: 'min',
     sorter(a, b) {
       return _get(a, ['info', 'min'], 0) - _get(b, ['info', 'min'], 0);
     },
@@ -82,7 +82,7 @@ const getColumns = (props) => [
         <p>漲幅</p>
       );
     },
-    dataIndex: ['info', 'diff'],
+    dataIndex: 'diff',
     render(val) {
       if (val) {
         const isGreen = val.indexOf('▽') >= 0;
@@ -99,9 +99,10 @@ const getColumns = (props) => [
     title() {
       return null;
     },
-    dataIndex: ['info', 'diff'],
-    render(racord) {
-      const { id } = racord;
+    dataIndex: 'diff',
+    render(val, record) {
+      const { id } = record;
+      console.log(record);
       return (
         <>
           <Tooltip title="刪除最愛">
@@ -120,61 +121,63 @@ const getColumns = (props) => [
 ];
 
 export default function Container(props) {
-  const { list = [], onChange } = props;
+  const { list = [], onChange = () => { } } = props;
   const [expandedKeys, setExpandedKeys] = useState([]);
+  const [dataSource, setDataSource] = useState([]);
   const [contextValue, dispatch] = useContextValue();
   const [loading, setLoading] = useState(true);
 
-  const [stockList, setStockList] = useState([]);
+  // const [stockList, setStockList] = useState([]);
   // const { stockList = [] } = contextValue;
 
   useEffect(() => {
     getList();
-  }, [...stockList.map(obj => obj.id)]);
+  }, [JSON.stringify(list)]);
 
   async function getList() {
     setLoading(true);
     const newStockList = await getStockList(list);
-    setStockList(newStockList);
+    setDataSource(newStockList);
     setLoading(false);
   }
 
   function removeStock(id) {
-    const newStockList = stockList.reduce((prev, curr) => {
-      if (curr.id !== id) {
+    const newList = list.reduce((prev, curr) => {
+      if (curr !== id) {
         return [...prev, curr];
       }
       return prev;
     }, []);
-    onChange(newStockList);
+    console.log(id, newList);
+    onChange(newList);
   }
 
-  function onExpand(expanded, record) {
-    if (expanded) {
-      setExpandedKeys([record.id]);
-    } else {
+  function onExpand(id) {
+    if (expandedKeys.includes(id)) {
       setExpandedKeys([]);
+    } else {
+      setExpandedKeys([id]);
     }
   }
 
-  const extendsProps = { removeStock };
+  const extendsProps = { removeStock, onExpand };
   const columns = getColumns(extendsProps);
 
   return (
     <>
-      <Search />
+      <Search onChange={onChange} list={list} />
       <Table
         rowKey="id"
         loading={loading}
-        dataSource={list}
+        dataSource={dataSource}
         columns={columns}
         pagination={false}
         showSorterTooltip={false}
         size="small"
         indentSize={0}
-        expandIconColumnIndex={-1}
-        onExpand={onExpand}
-        expandRowByClick
+        // expandIconColumnIndex={-1}
+        onExpand={(expanded, record) => onExpand(record.id)}
+        // expandRowByClick
         expandedRowKeys={expandedKeys}
         expandable={{
           expandedRowRender: (record, index, indent, expanded) => {

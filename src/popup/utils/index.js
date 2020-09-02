@@ -34,27 +34,6 @@ export async function getStockInfo(id, data) {
   return result;
 }
 
-export async function getStock(id) {
-  try {
-    const { data } = await axios({
-      method: 'get',
-      params: { s: id },
-      url: APIURL,
-      'Content-Type': 'xml',
-    });
-    const sotckInfo = await getStockInfo(id, data);
-    if (sotckInfo) {
-      return {
-        id,
-        ...sotckInfo
-      };
-    }
-  } catch (e) {
-    console.log(e);
-  }
-  return null;
-}
-
 export async function getStockAutoComplete(text) {
   try {
     const res = await axios({
@@ -70,6 +49,27 @@ export async function getStockAutoComplete(text) {
       return prev;
     }, []);
     return list;
+  } catch (e) {
+    console.log(e);
+  }
+  return null;
+}
+
+export async function getStock(id) {
+  try {
+    const { data } = await axios({
+      method: 'get',
+      params: { s: id },
+      url: APIURL,
+      'Content-Type': 'xml',
+    });
+    const sotckInfo = await getStockInfo(id, data);
+    if (sotckInfo) {
+      return {
+        id,
+        ...sotckInfo
+      };
+    }
   } catch (e) {
     console.log(e);
   }
