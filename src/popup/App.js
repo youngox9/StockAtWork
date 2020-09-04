@@ -1,40 +1,44 @@
 import React from 'react';
-import DynamicAntdTheme from 'dynamic-antd-theme';
 import Container from '~~features/Container';
 import { ContextProvider } from '~~hooks/useContextProvider';
 
 import 'antd/dist/antd.less';
 
-// import './less/index.less';
+const getLocalStorage = key => {
+  const storageData = localStorage.getItem(key);
+  try {
+    const storageJson = JSON.parse(storageData);
+    return storageJson;
+  } catch (e) {
+    return null;
+  }
+};
 
-function getStockList() {
-  const data = localStorage.getItem('stockData');
-  const stockList = data ? JSON.parse(data) : [];
-  return stockList;
-}
+const setLocalStorage = (key, obj) => localStorage.setItem(key, JSON.stringify(obj));
 
-const initialStockList = getStockList();
+const DEFAULT_SETTING = {
+  width: 450,
+  height: 'auto'
+};
 
 const initialState = {
-  width: 450,
-  height: 'auto',
-  stockList: initialStockList
+  setting: getLocalStorage('setting') || DEFAULT_SETTING,
+  stockList: getLocalStorage('stockData') || []
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'UPDATE_STOCKLIST':
-      // eslint-disable-next-line no-case-declarations
-      const { stockList = [] } = action;
-      localStorage.setItem('stockData', JSON.stringify(stockList));
+      setLocalStorage('stockData', action.stockList);
       return {
         ...state,
         stockList: action.stockList
       };
-    case 'RELOAD_STOCKLIST':
+    case 'UPDATE_SETTING':
+      setLocalStorage('setting', action.setting);
       return {
         ...state,
-        stockList: getStockList()
+        setting: action.setting
       };
     default:
       return state;

@@ -1,17 +1,27 @@
 import React, { useEffect, useState } from 'react';
 
-import { Tooltip, Button, Table, Tag } from 'antd';
+import { Tooltip, Button, Table, Tag, Row, Col, } from 'antd';
+import styled from 'styled-components';
 import _get from 'lodash/get';
-import uuidv4 from 'uuid/v4';
 import {
   DeleteFilled,
-  LinkOutlined,
+  ReloadOutlined,
 } from '@ant-design/icons';
 
-import { getStockList, APIURL } from '~~utils';
+import { getStockList } from '~~utils';
 import { useContextValue } from '~~hooks/useContextProvider';
 import StockDetail from '~~components/StockDetail';
 import Search from '~~features/Search';
+
+const SearchContainer = styled.div`
+  position: relative;
+  .refresh-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+    
+`;
 
 const getColumns = (props) => [
   {
@@ -165,7 +175,12 @@ export default function Container(props) {
 
   return (
     <>
-      <Search onChange={onChange} list={list} />
+      <SearchContainer>
+        <Search onChange={onChange} list={list} />
+        <Tooltip title="刷新頁面">
+          <Button className="refresh-btn" type="primary" shape="circle" icon={<ReloadOutlined />} size="small" onClick={getList} />
+        </Tooltip>
+      </SearchContainer>
       <Table
         rowKey="id"
         loading={loading}

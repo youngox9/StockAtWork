@@ -23,6 +23,9 @@ const GlobalStyle = createGlobalStyle`
     width: ${({ values: { width } }) => (`${width}px`)};
     height: ${({ values: { bodyHeight } }) => (`${bodyHeight}px`)};
   }
+  .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+    background-color: black;
+  }
 `;
 
 const ContainerWrap = styled.div`
@@ -31,12 +34,13 @@ const ContainerWrap = styled.div`
   margin: 0 auto;
   max-width: 100%;
   margin: 0 auto;
-  padding: 6px;
+  padding: 4px;
   transition: 0.3s ease all;
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
   .ant-tabs-nav {
     margin-bottom: 6px;
   }
+
   .ant-table {
     .ant-table-expand-icon-col, .ant-table-row-expand-icon-cell {
       width: 20px;
@@ -107,9 +111,10 @@ export default function Container() {
     }
   }, [containerEl]);
 
+  const { setting = {} } = contextValue;
   return (
     <ContainerWrap ref={setContainerEl}>
-      <GlobalStyle values={{ ...contextValue, bodyHeight }} />
+      <GlobalStyle values={{ ...setting, bodyHeight }} />
       <Tabs
         activeKey={activeTab}
         onChange={setActiveTab}
